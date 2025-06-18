@@ -1,32 +1,31 @@
 # 📦 Instalador Automático de Aplicaciones
 
-Este repositorio contiene un instalador automatizado para desplegar múltiples aplicaciones en equipos Windows. El script descarga un paquete comprimido `.7z` desde GitHub Releases, lo extrae en `C:\aplicaciones`, y ejecuta todos los instaladores incluidos (archivos `.exe` y `.msi`), evitando reinstalaciones innecesarias.
+Este repositorio contiene un instalador automatizado para desplegar múltiples aplicaciones en equipos Windows. El script descarga un paquete comprimido `.7z` desde GitHub Releases, lo extrae en `C:\aplicaciones`, y ejecuta todos los instaladores incluidos (`.exe` y `.msi`), evitando reinstalaciones innecesarias mediante un archivo `equivalencias.txt`.
 
 ---
 
-## 🚀 ¿Qué incluye?
+## 📁 Contenido del Repositorio
 
-- 📁 `aplicaciones.7z` (en Releases):
-  - Instaladores `.exe` / `.msi`
-  - Archivo `equivalencias.txt` con nombres amigables para verificación
-- 📜 Script PowerShell `instalador.ps1`
+- `automated apps download and install v1.ps1`: Script PowerShell principal
+- `launch PS.bat`: Lanzador automático que ejecuta el script `.ps1` con privilegios de administrador
+- `aplicaciones.7z`: Archivo comprimido disponible en [Releases](https://github.com/JLalib/aplicaciones/releases)
 
 ---
 
-## 🧩 Cómo funciona
+## 🧩 ¿Qué hace?
 
-1. **Descarga** `aplicaciones.7z` desde [Releases](https://github.com/JLalib/aplicaciones/releases)
-2. **Extrae** automáticamente en `C:\aplicaciones`
-3. **Lee** `equivalencias.txt` (si existe)
-4. **Verifica** si ya están instaladas las apps
+1. **Descarga** `aplicaciones.7z` desde GitHub Releases
+2. **Extrae** su contenido en `C:\aplicaciones`
+3. **Lee** `equivalencias.txt` (si está presente)
+4. **Verifica** si las aplicaciones ya están instaladas
 5. **Ejecuta** los instaladores necesarios
-6. **Elimina** el archivo `.7z` al final
+6. **Elimina** el archivo `.7z` tras la extracción
 
 ---
 
-## 📝 Archivo `equivalencias.txt`
+## 📝 Formato del archivo `equivalencias.txt`
 
-Este archivo permite asociar nombres de archivo con el nombre real del programa instalado (según lo que aparece en Panel de Control).
+Cada línea define el nombre del archivo instalador (sin extensión) y el nombre del programa tal como aparece en el sistema:
 
 Ejemplo:
 
@@ -37,16 +36,24 @@ chrome = Google Chrome
 adobe = Adobe Acrobat Reader
 
 
-> ⚠️ El nombre del archivo (sin extensión) debe coincidir con el de la izquierda.
+> ⚠️ El nombre del archivo (sin extensión) debe coincidir con el de la izquierda. Esto permite evitar instalar software ya presente en el equipo.
 
 ---
 
-## 🖥️ Ejecución del Script
+## 🚀 ¿Cómo se ejecuta?
 
-1. Haz clic derecho sobre `automated apps download and install v1.ps1`
-2. Ejecuta como **Administrador**
+### ✅ Opción 1: Doble clic (recomendado)
 
-O desde consola:
+1. Haz doble clic en `launch PS.bat`
+2. El script PowerShell se abrirá automáticamente **con permisos de administrador**
+
+### ⚙️ Opción 2: Manual (PowerShell)
+
+1. Haz clic derecho en `automated apps download and install v1.ps1`  
+   → Selecciona **"Ejecutar con PowerShell como administrador"**
+
+O bien:
 
 ```powershell
-powershell -ExecutionPolicy Bypass -File instalador.ps1
+powershell -ExecutionPolicy Bypass -File "automated apps download and install v1.ps1"
+
