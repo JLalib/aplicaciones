@@ -1,6 +1,29 @@
-﻿# -----------------------------------
-# 1. FUNCIONES DE UTILIDAD
-# -----------------------------------
+﻿# ============================================
+# ✅ Verificación de permisos de administrador
+# ============================================
+
+if (-not ([Security.Principal.WindowsPrincipal] [Security.Principal.WindowsIdentity]::GetCurrent()).IsInRole([Security.Principal.WindowsBuiltInRole] "Administrator")) {
+    Write-Host "⛔ Este script requiere privilegios de administrador." -ForegroundColor Red
+    Write-Host "👉 Haz clic derecho sobre el archivo y selecciona 'Ejecutar como administrador'." -ForegroundColor Yellow
+    Write-Host "🛑 El script se detendrá ahora." -ForegroundColor Red
+    exit 1
+}
+
+# ============================================
+# ✅ Establecer política de ejecución
+# ============================================
+
+try {
+    Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+    Write-Host "🔐 Política de ejecución configurada como RemoteSigned para el usuario actual." -ForegroundColor Green
+} catch {
+    Write-Host "⚠️ No se pudo establecer la política de ejecución. Es posible que ya esté configurada o restringida." -ForegroundColor Yellow
+}
+
+# ============================================
+# ✅ FUNCIONES DE UTILIDAD
+# ============================================
+
 function Handle-Error {
     param([string]$Message)
     Write-Host "ERROR: $Message" -ForegroundColor Red
@@ -28,9 +51,10 @@ function EstaInstalado($nombreBuscado) {
     return $false
 }
 
-# -----------------------------------
-# 2. DESCARGA Y EXTRACCIÓN DE ARCHIVO .7Z
-# -----------------------------------
+# ============================================
+# 📦 DESCARGA Y EXTRACCIÓN DEL .7Z
+# ============================================
+
 $url = "https://github.com/JLalib/aplicaciones/releases/download/v1.0/aplicaciones.7z"
 $output = "C:\aplicaciones.7z"
 $outputExt = "C:\aplicaciones"
@@ -43,8 +67,9 @@ try {
     Handle-Error "No se pudo descargar el archivo desde GitHub: $url"
 }
 
+# Verificar winget y 7-Zip
 if (-not (Get-Command winget -ErrorAction SilentlyContinue)) {
-    Handle-Error "winget no está disponible. Por favor instala winget para continuar."
+    Handle-Error "winget no está disponible. Instálalo primero o usa otro método."
 }
 
 $sevenZipPath = "C:\Program Files\7-Zip\7z.exe"
@@ -57,6 +82,7 @@ if (-not (Test-Path $sevenZipPath)) {
         Handle-Error "No se pudo instalar 7-Zip."
     }
 }
+
 if (-not (Test-Path $sevenZipPath)) {
     Handle-Error "7-Zip no está instalado correctamente."
 }
@@ -73,9 +99,10 @@ Write-Host "✅ Extracción completada." -ForegroundColor Green
 Remove-Item $output -Force
 Write-Host "🗑️ Archivo aplicaciones.7z eliminado." -ForegroundColor Green
 
-# -----------------------------------
-# 3. INSTALACIÓN DE APLICACIONES
-# -----------------------------------
+# ============================================
+# 🚀 INSTALACIÓN DE APLICACIONES
+# ============================================
+
 Set-Location -Path "C:\aplicaciones"
 
 # Leer equivalencias
